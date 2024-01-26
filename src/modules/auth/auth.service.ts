@@ -1,32 +1,41 @@
-import { BAD_REQUEST, NOT_FOUND } from 'http-status';
 import AppError from '@/errors/AppError';
+import { BAD_REQUEST, NOT_FOUND } from 'http-status';
 import User from '../user/user.model';
 import TUser from '../user/user.types';
 import { comparePassword, createJWT, hashPassword } from './auth.utils';
 
 export const registerUserToDb = async (payload: Omit<TUser, '_id'>) => {
-  const { username, email } = payload;
+  const { email } = payload;
 
   // check user is already registered or not
-  const isExist = await User.findOne({ $or: [{ username }, { email }] });
+  const isExist = await User.findOne({ email });
   if (isExist) {
-    throw new AppError(BAD_REQUEST, 'The User already exists by username or email');
+    throw new AppError(BAD_REQUEST, 'The User already exists by email');
   }
 
   // Now create the user
-  const user = await new User(payload).save();
+  const user = await new User({ ...payload, role: 'admin' }).save();
+
+  // create jwt token
+  const token = createJWT({ email: user.email, _id: user.id, role: user.role });
+
+  // ready user response
   const newUser = user.toObject() as Partial<TUser>;
   delete newUser.password;
   delete newUser.passwordUpdatedAt;
   delete newUser.__v;
-  return newUser;
+
+  return {
+    token,
+    user: newUser,
+  };
 };
 
-export const loginUserFromDb = async (payload: Pick<TUser, 'username' | 'password'>) => {
-  const { username, password } = payload;
+export const loginUserFromDb = async (payload: Pick<TUser, 'email' | 'password'>) => {
+  const { email, password } = payload;
 
   // check the user found or not
-  const user = await User.findOne({ username }).select('+password');
+  const user = await User.findOne({ email }).select('+password');
   if (!user?._id) {
     throw new AppError(NOT_FOUND, 'User not found with the username');
   }
@@ -42,8 +51,6 @@ export const loginUserFromDb = async (payload: Pick<TUser, 'username' | 'passwor
 
   // ready user response
   const userResponse = user.toObject() as Partial<TUser>;
-  delete userResponse.createdAt;
-  delete userResponse.updatedAt;
   delete userResponse.__v;
   delete userResponse.password;
   delete userResponse.passwordUpdatedAt;

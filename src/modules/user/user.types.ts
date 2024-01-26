@@ -5,7 +5,7 @@ export type Role = (typeof userRoles)[number];
 
 type TUser = {
   _id: ObjectId;
-  username: string;
+  name: string;
   email: string;
   password: string;
   role: Role;

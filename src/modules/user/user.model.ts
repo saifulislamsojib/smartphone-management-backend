@@ -5,11 +5,9 @@ import TUser from './user.types';
 
 const userSchema = new Schema<TUser>(
   {
-    username: {
+    name: {
       type: String,
-      unique: true,
       required: true,
-      index: true,
       trim: true,
     },
     email: {

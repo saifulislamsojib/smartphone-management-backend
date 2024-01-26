@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { userRoles } from '../user/user.constant';
 
 const passwordSchema = z
   .string()
@@ -21,14 +20,13 @@ const passwordSchema = z
   });
 
 export const registerUserSchema = z.object({
-  username: z.string().min(1).max(255),
+  name: z.string().trim().min(1).max(255),
   email: z.string().email(),
   password: passwordSchema,
-  role: z.enum(userRoles).optional(),
 });
 
 export const loginUserSchema = z.object({
-  username: z.string().min(1).max(255),
+  email: z.string().email(),
   password: passwordSchema,
 });
 
