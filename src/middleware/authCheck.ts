@@ -28,8 +28,8 @@ const authCheck = (...roles: Role[]) => {
     }
 
     // all ok, then add payload and user in request and call next function
-    const { email, _id, role, name } = isUserExist;
-    req.user = { ...payload, _id, name, email, role };
+    const { email, _id, role, name, createdAt, updatedAt } = isUserExist;
+    req.user = { ...payload, _id, name, email, role, createdAt, updatedAt };
     next();
   });
 };
