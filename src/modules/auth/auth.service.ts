@@ -37,7 +37,7 @@ export const loginUserFromDb = async (payload: Pick<TUser, 'email' | 'password'>
   // check the user found or not
   const user = await User.findOne({ email }).select('+password');
   if (!user?._id) {
-    throw new AppError(NOT_FOUND, 'User not found with the username');
+    throw new AppError(NOT_FOUND, 'User not found with the email');
   }
 
   // check the user password

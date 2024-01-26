@@ -1,9 +1,9 @@
-import { NOT_FOUND, UNAUTHORIZED } from 'http-status';
 import AppError from '@/errors/AppError';
 import { verifyJWT } from '@/modules/auth/auth.utils';
 import User from '@/modules/user/user.model';
 import { Role } from '@/modules/user/user.types';
 import catchAsync from '@/utils/catchAsync';
+import { NOT_FOUND, UNAUTHORIZED } from 'http-status';
 
 const authCheck = (...roles: Role[]) => {
   return catchAsync(async (req, _res, next) => {
@@ -28,8 +28,8 @@ const authCheck = (...roles: Role[]) => {
     }
 
     // all ok, then add payload and user in request and call next function
-    const { email, _id, role, username } = isUserExist;
-    req.user = { ...payload, _id, username, email, role };
+    const { email, _id, role, name } = isUserExist;
+    req.user = { ...payload, _id, name, email, role };
     next();
   });
 };
