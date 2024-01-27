@@ -100,7 +100,7 @@ export const getSmartPhoneListFromDb = async (payload: Record<string, string>) =
       limit: limitNumber,
       total: response?.total?.[0]?.count || 0,
     },
-    data: { courses: response?.courses },
+    data: response?.smartphones,
   };
 };
 
