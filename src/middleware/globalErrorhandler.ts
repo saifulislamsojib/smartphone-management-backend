@@ -1,8 +1,9 @@
+import configs from '@/configs';
+import AppError from '@/errors/AppError';
 import { ErrorRequestHandler } from 'express';
 import { BAD_REQUEST, UNAUTHORIZED } from 'http-status';
 import { Error as MongooseError } from 'mongoose';
 import { ZodError } from 'zod';
-import AppError from '@/errors/AppError';
 
 const globalErrorHandler: ErrorRequestHandler = (err: Error, _req, res, next) => {
   if (res.headersSent) {
@@ -52,7 +53,7 @@ const globalErrorHandler: ErrorRequestHandler = (err: Error, _req, res, next) =>
     message,
     errorMessage,
     errorDetails,
-    stack,
+    stack: configs.node_env === 'development' ? stack : null,
   });
 };
 
