@@ -1,4 +1,5 @@
 import authRoutes from '@/modules/auth/auth.route';
+import sellRoutes from '@/modules/sell/sell.route';
 import smartPhoneRoutes from '@/modules/smartphone/smartphone.route';
 import { Router } from 'express';
 
@@ -12,6 +13,10 @@ const moduleRoutes = [
   {
     path: '/smartphone',
     route: smartPhoneRoutes,
+  },
+  {
+    path: '/sell',
+    route: sellRoutes,
   },
 ];
 

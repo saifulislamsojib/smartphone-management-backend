@@ -23,12 +23,16 @@ export const getSmartPhoneListFromDb = async (payload: Record<string, string>) =
     cameraQuality,
     batteryLife,
     search,
+    onStock,
   } = payload;
   const pageNumber = parseInt(page, 10) || 1;
   const limitNumber = parseInt(limit, 10) >= 50 ? 50 : parseInt(limit, 10) || 10;
   const skip = (pageNumber - 1) * limitNumber;
 
   const filter: FilterQuery<TSmartPhone> = {};
+  if (onStock === 'true') {
+    filter.quantity = { $gte: 1 };
+  }
   if (minPrice) {
     filter.price = { $gte: Number(minPrice) };
   }
@@ -63,8 +67,8 @@ export const getSmartPhoneListFromDb = async (payload: Record<string, string>) =
     filter.batteryLife = batteryLife;
   }
   if (search) {
-    const searchQuery = { $regex: search.trim(), option: 'i' };
-    filter.$or = [{ name: searchQuery, brand: searchQuery, model: searchQuery }];
+    const searchQuery = { $regex: search.trim(), $options: 'i' };
+    filter.$or = [{ name: searchQuery }, { brand: searchQuery }, { model: searchQuery }];
   }
 
   const pipelines: PipelineStage[] = [
