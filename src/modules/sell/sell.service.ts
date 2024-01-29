@@ -64,9 +64,6 @@ export const getSellListFromDb = async (payload: Record<string, string>) => {
             },
           },
           {
-            $match: { smartphone: { $exists: true, $ne: null } }
-          },
-          {
             $project: {
               _id: 1,
               status: 1,
@@ -83,6 +80,9 @@ export const getSellListFromDb = async (payload: Record<string, string>) => {
                 $first: '$smartphone.operatingSystem',
               },
             },
+          },
+          {
+            $match: { 'smartphoneInfo._id': { $exists: true } },
           },
           {
             $skip: skip,
