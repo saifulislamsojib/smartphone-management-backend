@@ -4,7 +4,7 @@ import { addSell, getSellList } from './sell.controller';
 
 const sellRoutes = Router();
 
-sellRoutes.post('/', authCheck('admin'), addSell);
-sellRoutes.get('/', authCheck('admin'), getSellList);
+sellRoutes.post('/', authCheck('super-admin', 'seller'), addSell);
+sellRoutes.get('/', authCheck('super-admin'), getSellList);
 
 export default sellRoutes;

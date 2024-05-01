@@ -1,19 +1,20 @@
 import authCheck from '@/middleware/authCheck';
 import { Router } from 'express';
+import { userRoles } from '../user/user.constant';
 import {
   addSmartPhone,
+  deleteSmartPhones,
   getSmartPhoneById,
   getSmartPhoneList,
   updateSmartPhone,
-  deleteSmartPhones,
 } from './smartphone.controller';
 
 const smartPhoneRoutes = Router();
 
-smartPhoneRoutes.post('/', authCheck('admin'), addSmartPhone);
-smartPhoneRoutes.get('/', authCheck('admin', 'user'), getSmartPhoneList);
-smartPhoneRoutes.delete('/', authCheck('admin'), deleteSmartPhones);
-smartPhoneRoutes.get('/:id', authCheck('admin', 'user'), getSmartPhoneById);
-smartPhoneRoutes.patch('/:id', authCheck('admin'), updateSmartPhone);
+smartPhoneRoutes.post('/', authCheck('super-admin', 'manager'), addSmartPhone);
+smartPhoneRoutes.get('/', authCheck(...userRoles), getSmartPhoneList);
+smartPhoneRoutes.delete('/', authCheck('super-admin', 'manager'), deleteSmartPhones);
+smartPhoneRoutes.get('/:id', authCheck(...userRoles), getSmartPhoneById);
+smartPhoneRoutes.patch('/:id', authCheck('super-admin', 'manager'), updateSmartPhone);
 
 export default smartPhoneRoutes;
