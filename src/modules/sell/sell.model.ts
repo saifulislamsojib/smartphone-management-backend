@@ -17,6 +17,10 @@ const sellSchema = new Schema<TSell>(
       type: Number,
       required: true,
     },
+    totalPrice: {
+      type: Number,
+      required: true,
+    },
     buyerName: {
       type: String,
       required: true,

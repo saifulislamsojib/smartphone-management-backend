@@ -9,6 +9,7 @@ type TSell = {
   updatedAt: Date;
   sellBy: ObjectId;
   quantity: number;
+  totalPrice: number;
 };
 
 export default TSell;

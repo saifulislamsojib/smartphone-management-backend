@@ -8,7 +8,7 @@ import TSell from './sell.types';
 
 export const addSellToDb = async (payload: Omit<TSell, '_id'>) => {
   // check quantity of the product
-  const smartPhone = await SmartPhone.findById(payload.smartphone).select('quantity');
+  const smartPhone = await SmartPhone.findById(payload.smartphone).select('quantity price');
   if (!smartPhone) {
     throw new AppError(NOT_FOUND, 'Smartphone not found!');
   }
@@ -16,7 +16,9 @@ export const addSellToDb = async (payload: Omit<TSell, '_id'>) => {
     throw new AppError(BAD_REQUEST, `Stock limit Overed. Current stock is ${smartPhone.quantity}`);
   }
 
-  const sell = new Sell(payload).save();
+  const totalPrice = Number((smartPhone.price * Number(payload.quantity)).toFixed(2));
+
+  const sell = new Sell({ ...payload, totalPrice }).save();
 
   // update the smartphone quantity
   await SmartPhone.updateOne(
@@ -71,6 +73,7 @@ export const getSellListFromDb = async (payload: Record<string, string>) => {
               saleDate: 1,
               createdAt: 1,
               quantity: 1,
+              totalPrice: 1,
               'smartphoneInfo._id': { $first: '$smartphone._id' },
               'smartphoneInfo.name': { $first: '$smartphone.name' },
               'smartphoneInfo.price': { $first: '$smartphone.price' },
@@ -80,9 +83,6 @@ export const getSellListFromDb = async (payload: Record<string, string>) => {
                 $first: '$smartphone.operatingSystem',
               },
             },
-          },
-          {
-            $match: { 'smartphoneInfo._id': { $exists: true } },
           },
           {
             $skip: skip,
