@@ -14,7 +14,7 @@ export const registerUserToDb = async (payload: Omit<TUser, '_id'>) => {
   }
 
   // Now create the user
-  const user = await new User({ ...payload, role: 'admin' }).save();
+  const user = await new User(payload).save();
 
   // create jwt token
   const token = createJWT({ email: user.email, _id: user.id, role: user.role });
